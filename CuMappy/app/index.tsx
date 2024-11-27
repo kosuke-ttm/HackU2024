@@ -1,5 +1,6 @@
 import { Text, View, StyleSheet } from "react-native";
 import db from "../script/firebase";
+import { useRouter} from "expo-router";
 import { useEffect, useState } from "react";
 import { collection, getDocs, onSnapshot } from "firebase/firestore";
 
@@ -9,7 +10,13 @@ interface Post {
 }
 
 export default function Index() {
+  const router = useRouter(); // useRouterでrouterを取得
   const [posts, setPosts] = useState<Post[]>([]);
+  const goToAuthentication = () => {
+    router.push({
+      pathname: "/authentication"
+    });
+  };
 
   useEffect(() => {
     const postData = collection(db, "posts");
@@ -36,6 +43,9 @@ export default function Index() {
 
   return (
     <View style={styles.titleContainer}>
+      <Text onPress={goToAuthentication} >
+        サインイン画面へ
+      </Text>
       {posts.length === 0 ? (
         <Text>データがありません</Text>
       ) : (
