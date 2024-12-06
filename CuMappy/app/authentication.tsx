@@ -1,24 +1,29 @@
 import React , { useState } from "react";
-import { Text, TextInput, Button, View, StyleSheet } from "react-native";
+import { Text, TextInput, Button, View, StyleSheet, Alert } from "react-native";
 import { auth } from "../script/firebase";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import { useRouter} from "expo-router";
 
 // メイン画面
-export default function Index() {const [email, setEmail] = useState('');
+export default function Index() {
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
+  const router = useRouter(); // useRouterでrouterを取得
 
   const handleSignUp = () => {
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         // 登録成功
-        setMessage('ユーザー登録成功！');
-        console.log("user info:", userCredential)
+        Alert.alert("ユーザー登録成功！");
+        console.log("user info:", userCredential);
+        router.push("/home");
       })
       .catch((error) => {
         // エラー処理
-        setMessage('登録エラー: ' + error.message);
+        Alert.alert("登録エラー:",error.message)
         console.error('Registration error:', error);
+        return;
       });
   };
 
@@ -26,13 +31,15 @@ export default function Index() {const [email, setEmail] = useState('');
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         // ログイン成功
-        setMessage('ログイン成功！');
-        console.log('User logged in:', userCredential.user);
+        console.log('User logged in:', userCredential.user.email);
+        Alert.alert("ログイン成功！！")
+        router.push("/home");
       })
       .catch((error) => {
         // エラー処理
-        setMessage('ログインエラー: ' + error.message);
+        Alert.alert("ログインエラー:",error.message);
         console.error('Login error:', error);
+        return;
       });
   };
   return (
